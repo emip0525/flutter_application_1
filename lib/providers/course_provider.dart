@@ -7,7 +7,10 @@ import 'package:flutter_application_1/repositories/course_repository.dart';
 class CourseProvider extends ChangeNotifier {
   final CourseRepository repository;
 
-  CourseProvider(this.repository);
+  CourseProvider(this.repository) {
+    // Memuat data otomatis saat provider dibuat
+    fetchCoursesData();
+  }
 
   List<Course> courses = [];
   bool isLoading = false;
@@ -27,6 +30,11 @@ class CourseProvider extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  // Alias method agar kompatibel dengan pemanggilan loadCourses() / tombol Retry di UI Tahap 5
+  Future<void> loadCourses() async {
+    await fetchCoursesData();
   }
 
   bool isFavorite(String courseCode) {
