@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/course_provider.dart';
 import '../widgets/error_view.dart';
+import 'course_form_screen.dart';
 
 class CourseScreen extends StatelessWidget {
   const CourseScreen({super.key});
@@ -12,7 +13,7 @@ class CourseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Course Data Manager - Tahap 5'),
+        title: const Text('Course Data Manager'),
       ),
       body: Column(
         children: [
@@ -72,6 +73,16 @@ class CourseScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+      // Floating Action Button untuk navigasi ke form tambah course (Tahap 6)
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CourseFormScreen()),
+          );
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

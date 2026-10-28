@@ -1,3 +1,5 @@
+// Student ID: 2415051011 - Miftah Fadilatus Sakhila
+
 import '../models/course.dart';
 import '../services/course_api_service.dart';
 
@@ -10,15 +12,8 @@ class CourseRepository {
     return await apiService.getCourses();
   }
 
-  Future<Course> addCourse(Course course) async {
+  // Tambahkan fungsi ini untuk Tahap 6
+  Future<Course> createCourse(Course course) async {
     return await apiService.createCourse(course);
-  }
-
-  Future<void> updateCourse(int id, Course course) async {
-    await apiService.updateCourse(id, course);
-  }
-
-  Future<void> deleteCourse(int id) async {
-    await apiService.deleteCourse(id);
   }
 }

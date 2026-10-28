@@ -1,23 +1,23 @@
 // Student ID: 2415051011 - Miftah Fadilatus Sakhila
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/models/course.dart';
-import 'package:flutter_application_1/repositories/course_repository.dart';
+import '../models/course.dart';
+import '../repositories/course_repository.dart';
 
 class CourseProvider extends ChangeNotifier {
   final CourseRepository repository;
 
   CourseProvider(this.repository) {
-    // Memuat data otomatis saat provider dibuat
-    fetchCoursesData();
+    loadCourses();
   }
 
   List<Course> courses = [];
   bool isLoading = false;
+  bool isSaving = false;
   String? error;
   final Set<String> savedFavorites = {};
 
-  Future<void> fetchCoursesData() async {
+  Future<void> loadCourses() async {
     isLoading = true;
     error = null;
     notifyListeners();
@@ -32,9 +32,21 @@ class CourseProvider extends ChangeNotifier {
     }
   }
 
-  // Alias method agar kompatibel dengan pemanggilan loadCourses() / tombol Retry di UI Tahap 5
-  Future<void> loadCourses() async {
-    await fetchCoursesData();
+  Future<bool> createCourse(Course newCourse) async {
+    isSaving = true;
+    notifyListeners();
+
+    try {
+      await repository.createCourse(newCourse);
+      await loadCourses();
+      return true;
+    } catch (e) {
+      error = e.toString();
+      return false;
+    } finally {
+      isSaving = false;
+      notifyListeners();
+    }
   }
 
   bool isFavorite(String courseCode) {
