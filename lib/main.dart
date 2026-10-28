@@ -8,8 +8,8 @@ import 'providers/course_provider.dart';
 import 'screens/course_screen.dart';
 
 void main() {
-  // Ganti URL di bawah ini sesuai dengan endpoint backend/API praktikum Anda
-  final apiService = CourseApiService('https://your-api-url.com'); 
+  // Menggunakan API publik gratis agar langsung terhubung tanpa local server
+  final apiService = CourseApiService('https://jsonplaceholder.typicode.com'); 
   final courseRepository = CourseRepository(apiService);
 
   runApp(

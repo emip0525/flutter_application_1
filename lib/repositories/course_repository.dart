@@ -12,8 +12,12 @@ class CourseRepository {
     return await apiService.getCourses();
   }
 
-  // Tambahkan fungsi ini untuk Tahap 6
   Future<Course> createCourse(Course course) async {
     return await apiService.createCourse(course);
+  }
+
+  // Tambahkan fungsi ini untuk Tahap 7
+  Future<void> updateCourse(String id, Course course) async {
+    await apiService.updateCourse(id, course);
   }
 }
