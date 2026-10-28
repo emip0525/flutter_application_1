@@ -23,7 +23,6 @@ class Course {
     );
   }
 
-  // PASTIKAN METHOD INI ADA DI lib/models/course.dart
   Map<String, dynamic> toJson() => {
         'code': code,
         'title': title,
