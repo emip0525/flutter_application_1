@@ -1,14 +1,24 @@
-// Student ID: 2415051011 - Miftah Fadilatus Sakhila
-
-import 'package:flutter_application_1/models/course.dart';
-import 'package:flutter_application_1/services/course_service.dart';
+import '../models/course.dart';
+import '../services/course_api_service.dart';
 
 class CourseRepository {
-  final CourseService service;
+  final CourseApiService apiService;
 
-  CourseRepository(this.service);
+  CourseRepository(this.apiService);
 
-  Future<List<Course>> getCourses() {
-    return service.loadCourses();
+  Future<List<Course>> getCourses() async {
+    return await apiService.getCourses();
+  }
+
+  Future<Course> addCourse(Course course) async {
+    return await apiService.createCourse(course);
+  }
+
+  Future<void> updateCourse(int id, Course course) async {
+    await apiService.updateCourse(id, course);
+  }
+
+  Future<void> deleteCourse(int id) async {
+    await apiService.deleteCourse(id);
   }
 }
