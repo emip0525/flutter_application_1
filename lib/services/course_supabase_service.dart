@@ -2,9 +2,7 @@
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/course.dart';
-// Sesuaikan path import di bawah ini jika file course_data_source.dart berada di folder lain, 
-// misalnya jika satu folder gunakan: import 'course_data_source.dart';
-import 'course_data_source.dart'; 
+import 'course_data_source.dart';
 
 class CourseSupabaseService implements CourseDataSource {
   final supabase = Supabase.instance.client;
@@ -23,7 +21,13 @@ class CourseSupabaseService implements CourseDataSource {
 
   @override
   Future<Course> createCourse(Course course) async {
-    throw UnimplementedError();
+    final row = await supabase
+        .from('courses')
+        .insert(course.toJson())
+        .select()
+        .single();
+
+    return Course.fromJson(row);
   }
 
   @override
