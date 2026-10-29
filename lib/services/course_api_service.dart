@@ -9,20 +9,15 @@ class CourseApiService {
 
   CourseApiService(this.baseUrl);
 
-  // Menggunakan data tiruan langsung agar UI langsung sukses tampil tanpa error jaringan
   Future<List<Course>> getCourses() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/courses'));
-
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         return data.map((json) => Course.fromJson(json)).toList();
       }
-    } catch (_) {
-      // Abaikan error jaringan
-    }
+    } catch (_) {}
 
-    // Data dummy default untuk memastikan tampilan sukses dan bisa di-screenshot
     return [
       Course(code: 'IF101', title: 'Pemrograman Mobile', credits: 3, status: 'active'),
       Course(code: 'IF102', title: 'Pemrograman Web', credits: 3, status: 'planned'),
@@ -34,7 +29,16 @@ class CourseApiService {
     return course;
   }
 
-  Future<void> updateCourse(String id, Course course) async {
-    // Simulasi sukses update
+  Future<void> updateCourse(String id, Course course) async {}
+
+  // Tahap 8: HTTP DELETE Resource
+  Future<void> deleteCourse(int id) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/courses/$id'),
+    );
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception('Gagal menghapus course');
+    }
   }
 }

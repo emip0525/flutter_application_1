@@ -2,37 +2,37 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'services/course_api_service.dart';
-import 'repositories/course_repository.dart';
 import 'providers/course_provider.dart';
-import 'screens/course_screen.dart';
+import 'services/course_api_service.dart';
+import 'screens/main_navigation_screen.dart';
 
 void main() {
-  // Menggunakan API publik gratis agar langsung terhubung tanpa local server
-  final apiService = CourseApiService('https://jsonplaceholder.typicode.com'); 
-  final courseRepository = CourseRepository(apiService);
-
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => CourseProvider(courseRepository),
-      child: const CourseExplorerApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
-class CourseExplorerApp extends StatelessWidget {
-  const CourseExplorerApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Course Data Manager',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-        useMaterial3: true,
+    final String baseUrl = 'https://api.example.com';
+    final apiService = CourseApiService(baseUrl);
+
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => CourseProvider(apiService),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Mobile Programming - Clean Architecture',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          useMaterial3: true,
+        ),
+        home: const MainNavigationScreen(),
       ),
-      home: const CourseScreen(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }

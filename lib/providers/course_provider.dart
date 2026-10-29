@@ -1,81 +1,114 @@
 // Student ID: 2415051011 - Miftah Fadilatus Sakhila
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import '../models/course.dart';
-import '../repositories/course_repository.dart';
+import '../services/course_api_service.dart';
 
-class CourseProvider extends ChangeNotifier {
-  final CourseRepository repository;
+class CourseProvider with ChangeNotifier {
+  final CourseApiService apiService;
 
-  CourseProvider(this.repository) {
-    loadCourses();
-  }
+  CourseProvider(this.apiService);
 
-  List<Course> courses = [];
-  bool isLoading = false;
-  bool isSaving = false;
-  String? error;
-  final Set<String> savedFavorites = {};
+  List<Course> _courses = [];
+  bool _isLoading = false;
+  bool _isSaving = false;
+  String _errorMessage = '';
+  final Set<String> _favorites = {};
 
+  List<Course> get courses => _courses;
+  bool get isLoading => _isLoading;
+  bool get isSaving => _isSaving;
+  
+  // Getter 'error' untuk mencocokkan panggilan di UI
+  String get error => _errorMessage;
+  String get errorMessage => _errorMessage;
+
+  // Method loadCourses (alias dari fetchCourses)
   Future<void> loadCourses() async {
-    isLoading = true;
-    error = null;
+    await fetchCourses();
+  }
+
+  Future<void> fetchCourses() async {
+    _isLoading = true;
+    _errorMessage = '';
     notifyListeners();
 
     try {
-      courses = await repository.getCourses();
+      _courses = await apiService.getCourses();
     } catch (e) {
-      error = e.toString();
+      _errorMessage = e.toString();
     } finally {
-      isLoading = false;
+      _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<bool> createCourse(Course newCourse) async {
-    isSaving = true;
+  // Method createCourse
+  Future<void> createCourse(Course course) async {
+    _isSaving = true;
+    _errorMessage = '';
     notifyListeners();
 
     try {
-      await repository.createCourse(newCourse);
-      await loadCourses();
-      return true;
+      final newCourse = await apiService.createCourse(course);
+      _courses.add(newCourse);
     } catch (e) {
-      error = e.toString();
-      return false;
+      _errorMessage = e.toString();
+      rethrow;
     } finally {
-      isSaving = false;
+      _isSaving = false;
       notifyListeners();
     }
   }
 
-  // Tambahkan fungsi ini untuk Tahap 7
-  Future<bool> updateCourse(String id, Course updatedCourse) async {
-    isSaving = true;
-    notifyListeners();
+  Future<void> addCourse(Course course) async {
+    await createCourse(course);
+  }
 
+  Future<void> updateCourse(String id, Course course) async {
+    _isSaving = true;
     try {
-      await repository.updateCourse(id, updatedCourse);
-      await loadCourses(); // Refresh list setelah berhasil update
-      return true;
+      await apiService.updateCourse(id, course);
+      final index = _courses.indexWhere((c) => c.id.toString() == id);
+      if (index != -1) {
+        _courses[index] = course;
+        notifyListeners();
+      }
     } catch (e) {
-      error = e.toString();
-      return false;
+      _errorMessage = e.toString();
+      notifyListeners();
+      rethrow;
     } finally {
-      isSaving = false;
+      _isSaving = false;
       notifyListeners();
     }
   }
 
-  bool isFavorite(String courseCode) {
-    return savedFavorites.contains(courseCode);
+  // Tahap 8: HTTP DELETE Resource
+  Future<void> deleteCourse(int id) async {
+    try {
+      await apiService.deleteCourse(id);
+      _courses.removeWhere((course) => int.parse(course.id.toString()) == id);
+      _favorites.remove(id.toString());
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      rethrow;
+    }
   }
 
-  void toggleFavorite(String courseCode) {
-    if (savedFavorites.contains(courseCode)) {
-      savedFavorites.remove(courseCode);
+  // Manajemen Favorit
+  bool isFavorite(Course course) {
+    return _favorites.contains(course.id.toString());
+  }
+
+  void toggleFavorite(Course course) {
+    final idStr = course.id.toString();
+    if (_favorites.contains(idStr)) {
+      _favorites.remove(idStr);
     } else {
-      savedFavorites.add(courseCode);
+      _favorites.add(idStr);
     }
     notifyListeners();
   }
