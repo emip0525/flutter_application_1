@@ -3,12 +3,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/course.dart';
+import 'course_data_source.dart';
 
-class CourseApiService {
+class CourseApiService implements CourseDataSource {
   final String baseUrl;
 
   CourseApiService(this.baseUrl);
 
+  @override
   Future<List<Course>> getCourses() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/courses'));
@@ -25,13 +27,15 @@ class CourseApiService {
     ];
   }
 
+  @override
   Future<Course> createCourse(Course course) async {
     return course;
   }
 
-  Future<void> updateCourse(String id, Course course) async {}
+  @override
+  Future<void> updateCourse(int id, Course course) async {}
 
-  // Tahap 8: HTTP DELETE Resource
+  @override
   Future<void> deleteCourse(int id) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/courses/$id'),

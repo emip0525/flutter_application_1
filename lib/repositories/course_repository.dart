@@ -1,23 +1,18 @@
 // Student ID: 2415051011 - Miftah Fadilatus Sakhila
 
 import '../models/course.dart';
-import '../services/course_api_service.dart';
+import '../services/course_data_source.dart';
 
 class CourseRepository {
-  final CourseApiService apiService;
+  CourseRepository(this.dataSource);
 
-  CourseRepository(this.apiService);
+  final CourseDataSource dataSource;
 
-  Future<List<Course>> getCourses() async {
-    return await apiService.getCourses();
-  }
+  Future<List<Course>> getCourses() => dataSource.getCourses();
 
-  Future<Course> createCourse(Course course) async {
-    return await apiService.createCourse(course);
-  }
+  Future<Course> createCourse(Course course) => dataSource.createCourse(course);
 
-  // Tambahkan fungsi ini untuk Tahap 7
-  Future<void> updateCourse(String id, Course course) async {
-    await apiService.updateCourse(id, course);
-  }
+  Future<void> updateCourse(int id, Course course) => dataSource.updateCourse(id, course);
+
+  Future<void> deleteCourse(int id) => dataSource.deleteCourse(id);
 }
