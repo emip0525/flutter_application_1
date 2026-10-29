@@ -31,15 +31,7 @@ class CourseProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      // =========================================================================
-      // PETUNJUK UNTUK SCREENSHOT KASUS A:
-      // Biarkan baris di bawah ini AKTIF untuk memaksa munculnya halaman ErrorView 
-      // dan tombol Retry di emulator.
-      // =========================================================================
-      throw Exception('HTTP 404: Endpoint /courses tidak ditemukan');
-
-      // (Kode asli di bawah ini akan dijalankan kembali setelah selesai screenshot)
-      // _courses = await repository.getCourses();
+      _courses = await repository.getCourses();
     } catch (e) {
       _errorMessage = e.toString();
     } finally {
@@ -71,8 +63,6 @@ class CourseProvider with ChangeNotifier {
 
   Future<void> updateCourse(String id, Course course) async {
     _isSaving = true;
-    notifyListeners();
-
     try {
       await repository.updateCourse(int.parse(id), course);
       final index = _courses.indexWhere((c) => c.id.toString() == id);

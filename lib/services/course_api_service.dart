@@ -12,15 +12,13 @@ class CourseApiService implements CourseDataSource {
 
   @override
   Future<List<Course>> getCourses() async {
-    
-    final response = await http.get(Uri.parse('$baseUrl/courses_salah'));
+    final response = await http.get(Uri.parse('$baseUrl/courses'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => Course.fromJson(json)).toList();
     } else {
-      // Melempar exception agar ditangkap oleh Provider & memunculkan ErrorView
-      throw Exception('Gagal memuat data: Server merespons ${response.statusCode}');
+      throw Exception('Gagal memuat data course: ${response.statusCode}');
     }
   }
 
