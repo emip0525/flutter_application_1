@@ -26,7 +26,17 @@ class _CourseScreenState extends State<CourseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daftar Course (2415051011)'),
+        // Menampilkan Judul serta Nama & NIM lengkap di bagian atas
+        title: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Daftar Course'),
+            Text(
+              'Miftah Fadilatus Sakhila - 2415051011',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+            ),
+          ],
+        ),
       ),
       body: Consumer<CourseProvider>(
         builder: (context, provider, child) {
