@@ -12,19 +12,16 @@ class CourseApiService implements CourseDataSource {
 
   @override
   Future<List<Course>> getCourses() async {
-    try {
-      final response = await http.get(Uri.parse('$baseUrl/courses'));
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        return data.map((json) => Course.fromJson(json)).toList();
-      }
-    } catch (_) {}
+    
+    final response = await http.get(Uri.parse('$baseUrl/courses_salah'));
 
-    return [
-      Course(code: 'IF101', title: 'Pemrograman Mobile', credits: 3, status: 'active'),
-      Course(code: 'IF102', title: 'Pemrograman Web', credits: 3, status: 'planned'),
-      Course(code: 'IF103', title: 'Struktur Data', credits: 4, status: 'done'),
-    ];
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => Course.fromJson(json)).toList();
+    } else {
+      // Melempar exception agar ditangkap oleh Provider & memunculkan ErrorView
+      throw Exception('Gagal memuat data: Server merespons ${response.statusCode}');
+    }
   }
 
   @override
